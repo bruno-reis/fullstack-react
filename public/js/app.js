@@ -1,5 +1,9 @@
 
 class ProductList extends React.Component {
+  handleProductUpvote(id) {
+    console.log(`${id} was upvoted!`)
+  }
+
   render() {
     const products = Seed.products.sort((a, b) => (
         b.votes - a.votes
@@ -15,6 +19,7 @@ class ProductList extends React.Component {
             votes={product.votes}
             submitterAvatarUrl={product.submitterAvatarUrl}
             productImageUrl={product.productImageUrl}
+            onVote={this.handleProductUpvote}
           />
     ))
 
@@ -27,6 +32,16 @@ class ProductList extends React.Component {
 }
 
 class Product extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.handleUpvote = this.handleUpvote.bind(this)
+  }
+
+  handleUpvote() {
+    this.props.onVote(this.props.id)
+  }
+
   render() {
     return (
         <div className='item'>
@@ -35,7 +50,10 @@ class Product extends React.Component {
           </div>
           <div className='middle aligned content'>
             <div className='header'>
-              <a><i className='large caret up icon' /> {this.props.votes} </a>
+              <a onClick={this.handleUpvote}>
+                <i className='large caret up icon' />
+              </a>
+              {this.props.votes}
             </div>
             <div className='description'>
               <a href={this.props.url}> {this.props.title} </a>
