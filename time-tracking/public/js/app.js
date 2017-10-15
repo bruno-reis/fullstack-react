@@ -27,6 +27,10 @@ class TimersDashboard extends React.Component {
     this.updateTimer(attrs)
   }
 
+  handleOnDelete = timerId => {
+    this.deleteTimer(timerId)
+  }
+
   createTimer = timer => {
     const t = helpers.newTimer(timer)
     this.setState({ timers: this.state.timers.concat(t)})
@@ -47,11 +51,18 @@ class TimersDashboard extends React.Component {
     })
   }
 
+  deleteTimer = timerId => {
+    this.setState({
+      timers: this.state.timers.filter(t => t.id !== timerId)
+    })
+  }
+
   render() {
     return (
       <div className='ui three column centered grid'>
         <div className='column'>
-          <EditableTimerList timers={this.state.timers} onFormSubmit={this.handleEditFormSubmit}/>
+          <EditableTimerList timers={this.state.timers} onFormSubmit={this.handleEditFormSubmit}
+                             onDelete={this.handleOnDelete} />
           <ToggleableTimerForm onFormSubmit={this.handleCreateFormSubmit} />
         </div>
       </div>
@@ -104,6 +115,7 @@ class EditableTimerList extends React.Component {
                      elapsed={timer.elapsed}
                      runningSince={timer.runningSince}
                      onFormSubmit={this.props.onFormSubmit}
+                     onDelete={this.props.onDelete}
       />
     ))
 
@@ -155,6 +167,7 @@ class EditableTimer extends React.Component {
                elapsed={this.props.elapsed}
                runningSince={this.props.runningSince}
                onEditClick={this.handleEditClick}
+               onDeleteClick={this.props.onDelete}
         />
       )
     }
@@ -209,6 +222,10 @@ class TimerForm extends React.Component {
 }
 
 class Timer extends React.Component {
+  handleDeleteClick = () => {
+    this.props.onDeleteClick(this.props.id)
+  }
+
   render() {
     const elapsedString = helpers.renderElapsedString(this.props.elapsed)
     return (
@@ -220,7 +237,7 @@ class Timer extends React.Component {
             <h2>{elapsedString}</h2>
           </div>
           <div className='extra content'>
-            <span className='right floated trash icon' onClick={this.props.onDeleteClick}><i className='trash icon' /></span>
+            <span className='right floated trash icon' onClick={this.handleDeleteClick}><i className='trash icon' /></span>
             <span className='right floated edit icon' onClick={this.props.onEditClick}><i className='edit icon' /></span>
           </div>
         </div>
